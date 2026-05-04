@@ -18,10 +18,15 @@ from pathlib import Path
 
 load_dotenv()
 
-client = OpenAI(api_key=os.getenv("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com")
-SMTP_EMAIL = os.getenv("SMTP_EMAIL")
-SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
-TEACHER_EMAIL = "tigran.misakyan08@gmail.com"
+def _get_secret(key):
+    try:
+        return st.secrets[key]
+    except (KeyError, FileNotFoundError):
+        return os.getenv(key)
+
+client = OpenAI(api_key=_get_secret("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com")
+SMTP_EMAIL = _get_secret("SMTP_EMAIL")
+SMTP_PASSWORD = _get_secret("SMTP_PASSWORD")
 
 # --- Load CSS from file ---
 css_path = Path(__file__).parent / "style.css"
